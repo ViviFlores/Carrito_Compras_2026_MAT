@@ -8,6 +8,7 @@ import { InputComponent } from '../components/InputComponent';
 import { ButtonComponent } from '../components/ButtonComponent';
 import Icon from '@expo/vector-icons/MaterialIcons';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+import { User } from '../navigator/StackNavigator';
 
 //interface define la estructura del objeto del formulario
 interface FormLogin {
@@ -15,19 +16,12 @@ interface FormLogin {
   password: string;
 }
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
+//interface define las propiedades del componente
+interface Props {
+  users: User[];   //arreglo de usuarios desde StackNavigator
 }
 
-export const LoginScreen = () => {
-  //datos de prueba
-  const users: User[] = [
-    { id: 1, name: 'Viviana Flores', email: 'vflores@gmail.com', password: '123456' },
-    { id: 2, name: 'Carlos Aguas', email: 'caguas@gmail.com', password: '123456' }]
-
+export const LoginScreen = ({ users }: Props) => {
   //hook useState: permite getsionar el estado del formulario
   const [formLogin, setFormLogin] = useState<FormLogin>({
     email: '',
@@ -66,7 +60,9 @@ export const LoginScreen = () => {
       Alert.alert('Error', 'Usuario y/o contraseña incorrectos');
       return;
     }
-    console.log(formLogin);
+    //console.log(formLogin);
+    //Si todo sale bien, se carga la lista de productos
+    navigation.dispatch(CommonActions.navigate({ name: 'Home' }));
   }
 
   return (
