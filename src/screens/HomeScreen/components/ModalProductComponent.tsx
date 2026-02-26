@@ -9,12 +9,23 @@ interface Props {
     isVisible: boolean;  //mostrar modal
     item: Product;
     hiddenModal: () => void; //ocultar el modal
+    changeStockProduct: (id: number, quantity: number) => void; //función actualiza el stock
 }
 
-export const ModalProductComponent = ({ isVisible, item, hiddenModal }: Props) => {
+export const ModalProductComponent = ({ isVisible, item, hiddenModal, changeStockProduct }: Props) => {
     const { width } = useWindowDimensions();
     //hook useState: permite gestionar el estado del contador
     const [quantity, setQuantity] = useState<number>(1);
+
+    //función agregar el producto al carrito
+    const handleAddProduct = () => {
+        //llamar a la función que actualice el stock
+        changeStockProduct(item.id, quantity);
+        //cerrar modal
+        hiddenModal();
+        //reiniciar la cantidad
+        setQuantity(1);
+    }
 
     return (
         <Modal visible={isVisible} animationType='fade' transparent={true}>
@@ -53,7 +64,8 @@ export const ModalProductComponent = ({ isVisible, item, hiddenModal }: Props) =
                                     </TouchableOpacity>
                                     <Text style={{ fontSize: 17 }}>{quantity}</Text>
                                     <TouchableOpacity style={stylesGlobal.buttonQuantity}
-                                        onPress={() => setQuantity(quantity + 1)}>
+                                        onPress={() => setQuantity(quantity + 1)}
+                                        disabled={quantity == item.stock}>
                                         <Text style={stylesGlobal.buttonQuantityText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -62,7 +74,8 @@ export const ModalProductComponent = ({ isVisible, item, hiddenModal }: Props) =
                                         Total: ${(item.price * quantity).toFixed(2)}
                                     </Text>
                                 </View>
-                                <TouchableOpacity style={stylesGlobal.button}>
+                                <TouchableOpacity style={stylesGlobal.button}
+                                    onPress={handleAddProduct}>
                                     <Text style={stylesGlobal.buttonText}>Agregar Carrito</Text>
                                 </TouchableOpacity>
                             </>
